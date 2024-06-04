@@ -15,7 +15,7 @@ import onnxruntime as ort
 
 parser = argparse.ArgumentParser(description='Retinaface')
 
-parser.add_argument('-m', '--trained_model', default='FaceDetector.onnx',
+parser.add_argument('-m', '--trained_model', default='FaceDetector_padding.onnx',
                     type=str, help='Trained state_dict file path to open')
 parser.add_argument('--network', default='mobile0.25', help='Backbone network mobile0.25 or resnet50')
 parser.add_argument('--cpu', action="store_true", default=False, help='Use cpu inference')
@@ -205,10 +205,10 @@ if __name__ == '__main__':
                 cv2.circle(img_raw, (b[13], b[14]), 1, (255, 0, 0), 4)
             # save image
 
-            name = "test.jpg"
+            name = "test_padding.jpg"
             # basename = os.path.basename(image_path)
             # name = "./test_" + image_path
             cv2.imshow("test",img_raw)
-            # cv2.imwrite(name, img_raw)
+            cv2.imwrite(name, img_raw)
             cv2.waitKey()
             cv2.destroyAllWindows()
