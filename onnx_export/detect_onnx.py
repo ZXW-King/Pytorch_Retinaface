@@ -118,11 +118,11 @@ if __name__ == '__main__':
         image_path = "/media/xin/work/github_pro/face/Pytorch_Retinaface/curve/test.jpg"
         img_raw = cv2.imread(image_path, cv2.IMREAD_COLOR)
         img_rgb = cv2.cvtColor(img_raw, cv2.COLOR_BGR2RGB)
-        target_size = (640, 640)  # Example target size
-        padding_color = (0, 0, 0)  # Example padding color (black)
-        img, ratio, padding = padding_resize(img_rgb, target_size, padding_color)
+        # target_size = (640, 640)  # Example target size
+        # padding_color = (0, 0, 0)  # Example padding color (black)
+        # img, ratio, padding = padding_resize(img_rgb, target_size, padding_color)
 
-        img = np.float32(img)
+        img = np.float32(img_rgb)
         im_height, im_width, _ = img.shape
         scale = np.array([img.shape[1], img.shape[0], img.shape[1], img.shape[0]])
         # img -= (104, 117, 123)
@@ -178,10 +178,10 @@ if __name__ == '__main__':
         print('post processing time: {:.4f}s'.format(time.time() - tic))
 
         # Map boxes and landmarks back to original image size
-        dets[:, [0, 2]] = (dets[:, [0, 2]] - padding[0]) / ratio
-        dets[:, [1, 3]] = (dets[:, [1, 3]] - padding[1]) / ratio
-        dets[:, 5::2] = (dets[:, 5::2] - padding[0]) / ratio
-        dets[:, 6::2] = (dets[:, 6::2] - padding[1]) / ratio
+        # dets[:, [0, 2]] = (dets[:, [0, 2]] - padding[0]) / ratio
+        # dets[:, [1, 3]] = (dets[:, [1, 3]] - padding[1]) / ratio
+        # dets[:, 5::2] = (dets[:, 5::2] - padding[0]) / ratio
+        # dets[:, 6::2] = (dets[:, 6::2] - padding[1]) / ratio
 
 
         # show image
@@ -209,6 +209,6 @@ if __name__ == '__main__':
             # basename = os.path.basename(image_path)
             # name = "./test_" + image_path
             cv2.imshow("test",img_raw)
-            # cv2.imwrite(name, img_raw)
+            cv2.imwrite(name, img_raw)
             cv2.waitKey()
             cv2.destroyAllWindows()

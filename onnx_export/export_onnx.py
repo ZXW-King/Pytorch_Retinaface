@@ -81,16 +81,16 @@ if __name__ == '__main__':
     net = net.to(device)
 
     # ------------------------ export -----------------------------
-    output_onnx = 'FaceDetector_padding.onnx'
+    output_onnx = 'FaceDetector.onnx'
     print("==> Exporting model to ONNX format at '{}'".format(output_onnx))
     input_names = ["input"]
     output_names = ["bbox", "confidence", "landmark"]
     inputs = torch.randn(1, 3, args.long_side, args.long_side).to(device)
 
-    # dynamic_axes = {"input": {0: "None", 2: "None", 3: "None"}, "bbox": {1: "None"}, "confidence": {1: "None"}, "landmark": {1: "None"}}
+    dynamic_axes = {"input": {0: "None", 2: "None", 3: "None"}, "bbox": {1: "None"}, "confidence": {1: "None"}, "landmark": {1: "None"}}
     # dynamic_axes = {"bbox": {1: "None"}, "confidence": {1: "None"}, "landmark": {1: "None"}}
 
     torch_out = torch.onnx.export(net, inputs, output_onnx, export_params=True, verbose=False,
-                                   input_names=input_names, output_names=output_names, opset_version=12,)
-                                   # dynamic_axes=dynamic_axes)
+                                   input_names=input_names, output_names=output_names, opset_version=12,
+                                   dynamic_axes=dynamic_axes)
 
