@@ -20,6 +20,7 @@ parser.add_argument('-m', '--trained_model', default='FaceDetector_padding.onnx'
                     type=str, help='Trained state_dict file path to open')
 parser.add_argument('--network', default='mobile0.25', help='Backbone network mobile0.25 or resnet50')
 parser.add_argument('--cpu', action="store_true", default=False, help='Use cpu inference')
+parser.add_argument('--iscamera', action="store_true", default=False, help='Is it a video file')
 parser.add_argument('--confidence_threshold', default=0.02, type=float, help='confidence_threshold')
 parser.add_argument('--top_k', default=5000, type=int, help='top_k')
 parser.add_argument('--nms_threshold', default=0.4, type=float, help='nms_threshold')
@@ -27,9 +28,8 @@ parser.add_argument('--keep_top_k', default=750, type=int, help='keep_top_k')
 parser.add_argument('--save_image_path', type=str, default="/media/xin/data/data/face_data/test_data/res/screen-result_onnx", help='show detection results')
 parser.add_argument('--display', action="store_true", default=True, help='show detection results')
 parser.add_argument('--vis_thres', default=0.6, type=float, help='visualization_threshold')
-parser.add_argument('--imgdir', default="/media/xin/data/data/face_data/images", type=str,
-                    help='visualization_threshold')
 parser.add_argument('--imgsize', default=640, type=int, help='visualization_threshold')
+parser.add_argument('--test_path', default="data/test", type=str, help='test path')
 args = parser.parse_args()
 
 
@@ -207,7 +207,7 @@ class VideoStreamer(object):
         self.file_path = file_path
         self.rotate_angle = rotate_angle
         self.i = 0
-        if self.basedir == "camera":
+        if self.basedir:
             # 打开视频文件
             self.cap = cv2.VideoCapture(self.file_path)
             # 检查视频是否成功打开
@@ -282,12 +282,10 @@ if __name__ == '__main__':
     img_size = args.imgsize
     model_path = args.trained_model
     display = args.display
-    # save_image_path = args.save_image_path
-    save_image_path = ""
-    # basedir = "camera"
-    basedir = "cameras"
-    # file_path = "/media/xin/data/data/face_data/test_img"
-    file_path = "/media/xin/data/data/face_data/our_test/images"
+    save_image_path = args.save_image_path
+    basedir = args.iscamera
+    file_path = args.test_path
+    # file_path = "/media/xin/data/data/face_data/our_test/images"
     # file_path = "/media/xin/data/data/face_data/test_data/FairPhone5广角采集预览录屏/室内灯光/0.2m screen-20240417-144619.mp4"
     vs = VideoStreamer(basedir, file_path,0)
     # testing begin
