@@ -4,7 +4,7 @@ import argparse
 import torch
 import torch.backends.cudnn as cudnn
 import numpy as np
-from data import cfg_mnet, cfg_re50
+from data import cfg_mnet, cfg_re50,cfg_rfb
 from layers.functions.prior_box import PriorBox
 from utils.nms.py_cpu_nms import py_cpu_nms
 import cv2
@@ -15,7 +15,7 @@ import onnxruntime as ort
 
 parser = argparse.ArgumentParser(description='Retinaface')
 
-parser.add_argument('-m', '--trained_model', default='FaceDetector.onnx',
+parser.add_argument('-m', '--trained_model', default='FaceDetector_padding.onnx',
                     type=str, help='Trained state_dict file path to open')
 parser.add_argument('--network', default='mobile0.25', help='Backbone network mobile0.25 or resnet50')
 parser.add_argument('--cpu', action="store_true", default=False, help='Use cpu inference')
@@ -104,8 +104,8 @@ if __name__ == '__main__':
     cfg = None
     if args.network == "mobile0.25":
         cfg = cfg_mnet
-    elif args.network == "resnet50":
-        cfg = cfg_re50
+    elif args.network == "RFB":
+        cfg = cfg_rfb
 
     # load onnx model
     retinaface = load_model_ort(args.trained_model)
@@ -115,17 +115,19 @@ if __name__ == '__main__':
 
     # testing begin
     for i in range(1):
-        image_path = "/media/xin/work/github_pro/face/Pytorch_Retinaface/curve/test.jpg"
+        # image_path = "/media/xin/work/github_pro/face/Pytorch_Retinaface/curve/test.jpg"
+        image_path = "/media/xin/work/github_pro/face/Pytorch_Retinaface/onnx_export/img_30.jpg"
         img_raw = cv2.imread(image_path, cv2.IMREAD_COLOR)
-        img_rgb = cv2.cvtColor(img_raw, cv2.COLOR_BGR2RGB)
-        # target_size = (640, 640)  # Example target size
-        # padding_color = (0, 0, 0)  # Example padding color (black)
-        # img, ratio, padding = padding_resize(img_rgb, target_size, padding_color)
+        # img_rgb = cv2.cvtColor(img_raw, cv2.COLOR_BGR2RGB)
+        img_rgb = img_raw
+        target_size = (640, 640)  # Example target size
+        padding_color = (0, 0, 0)  # Example padding color (black)
+        img, ratio, padding = padding_resize(img_rgb, target_size, padding_color)
+        img = np.float32(img)
 
-        img = np.float32(img_rgb)
         im_height, im_width, _ = img.shape
         scale = np.array([img.shape[1], img.shape[0], img.shape[1], img.shape[0]])
-        # img -= (104, 117, 123)
+        img -= (104, 117, 123)
         img = img.transpose(2, 0, 1)
         img = np.expand_dims(img, axis=0)
 
@@ -205,7 +207,7 @@ if __name__ == '__main__':
                 cv2.circle(img_raw, (b[13], b[14]), 1, (255, 0, 0), 4)
             # save image
 
-            name = "test.jpg"
+            name = "test_padding2.jpg"
             # basename = os.path.basename(image_path)
             # name = "./test_" + image_path
             cv2.imshow("test",img_raw)

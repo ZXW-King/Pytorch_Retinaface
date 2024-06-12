@@ -27,7 +27,7 @@ class PriorBox(object):
                     dense_cy = [y * self.steps[k] / self.image_size[0] for y in [i + 0.5]]
                     for cy, cx in product(dense_cy, dense_cx):
                         anchors += [cx, cy, s_kx, s_ky]
-
+        a = np.array(anchors).reshape(-1,4)
         # back to torch land
         if self.__format == "tensor":
             output = torch.Tensor(anchors).view(-1, 4)
