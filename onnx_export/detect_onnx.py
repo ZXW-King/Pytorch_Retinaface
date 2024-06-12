@@ -124,7 +124,6 @@ if __name__ == '__main__':
         padding_color = (0, 0, 0)  # Example padding color (black)
         img, ratio, padding = padding_resize(img_rgb, target_size, padding_color)
         img = np.float32(img)
-
         im_height, im_width, _ = img.shape
         scale = np.array([img.shape[1], img.shape[0], img.shape[1], img.shape[0]])
         img -= (104, 117, 123)
@@ -180,10 +179,10 @@ if __name__ == '__main__':
         print('post processing time: {:.4f}s'.format(time.time() - tic))
 
         # Map boxes and landmarks back to original image size
-        # dets[:, [0, 2]] = (dets[:, [0, 2]] - padding[0]) / ratio
-        # dets[:, [1, 3]] = (dets[:, [1, 3]] - padding[1]) / ratio
-        # dets[:, 5::2] = (dets[:, 5::2] - padding[0]) / ratio
-        # dets[:, 6::2] = (dets[:, 6::2] - padding[1]) / ratio
+        dets[:, [0, 2]] = (dets[:, [0, 2]] - padding[0]) / ratio
+        dets[:, [1, 3]] = (dets[:, [1, 3]] - padding[1]) / ratio
+        dets[:, 5::2] = (dets[:, 5::2] - padding[0]) / ratio
+        dets[:, 6::2] = (dets[:, 6::2] - padding[1]) / ratio
 
 
         # show image

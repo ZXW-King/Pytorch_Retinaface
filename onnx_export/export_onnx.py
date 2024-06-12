@@ -4,8 +4,9 @@ import argparse
 import torch
 import torch.backends.cudnn as cudnn
 import numpy as np
-from data import cfg_mnet, cfg_re50
+from data import cfg_mnet, cfg_re50, cfg_rfb
 from layers.functions.prior_box import PriorBox
+from models.net_rfb import RFB
 from utils.nms.py_cpu_nms import py_cpu_nms
 import cv2
 from models.retinaface import RetinaFace
@@ -68,11 +69,18 @@ if __name__ == '__main__':
     if args.network == "mobile0.25":
         cfg = cfg_mnet
         cfg['pretrain'] = False
+        net = RetinaFace(cfg=cfg, phase = 'test')
     elif args.network == "resnet50":
         cfg = cfg_re50
         cfg['pretrain'] = False
+        net = RetinaFace(cfg=cfg, phase='test')
+    elif args.network == "RFB":
+        cfg = cfg_rfb
+        cfg['pretrain'] = False
+        net = RFB(cfg=cfg, phase='test')
+    else:
+        raise "no model!"
     # net and model
-    net = RetinaFace(cfg=cfg, phase = 'test')
     net = load_model(net, args.trained_model, args.cpu)
     net.eval()
     print('Finished loading model!')
@@ -88,10 +96,10 @@ if __name__ == '__main__':
     inputs = torch.randn(1, 3, args.long_side, args.long_side).to(device)
     # inputs = torch.randn(1, 3, 640, 640).to(device)
 
-    dynamic_axes = {"input": {0: "None", 2: "None", 3: "None"}, "bbox": {1: "None"}, "confidence": {1: "None"}, "landmark": {1: "None"}}
+    # dynamic_axes = {"input": {0: "None", 2: "None", 3: "None"}, "bbox": {1: "None"}, "confidence": {1: "None"}, "landmark": {1: "None"}}
     # dynamic_axes = {"bbox": {1: "None"}, "confidence": {1: "None"}, "landmark": {1: "None"}}
 
     torch_out = torch.onnx.export(net, inputs, output_onnx, export_params=True, verbose=False,
-                                   input_names=input_names, output_names=output_names, opset_version=12,
-                                   dynamic_axes=dynamic_axes)
+                                   input_names=input_names, output_names=output_names, opset_version=12,)
+                                   # dynamic_axes=dynamic_axes)
 

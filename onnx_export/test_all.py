@@ -25,7 +25,7 @@ parser.add_argument('--top_k', default=5000, type=int, help='top_k')
 parser.add_argument('--nms_threshold', default=0.4, type=float, help='nms_threshold')
 parser.add_argument('--keep_top_k', default=750, type=int, help='keep_top_k')
 parser.add_argument('--save_image_path', type=str, default="/media/xin/data/data/face_data/test_data/res/screen-result_onnx", help='show detection results')
-parser.add_argument('--display', action="store_true", default=False, help='show detection results')
+parser.add_argument('--display', action="store_true", default=True, help='show detection results')
 parser.add_argument('--vis_thres', default=0.6, type=float, help='visualization_threshold')
 parser.add_argument('--imgdir', default="/media/xin/data/data/face_data/images", type=str,
                     help='visualization_threshold')
@@ -282,11 +282,14 @@ if __name__ == '__main__':
     img_size = args.imgsize
     model_path = args.trained_model
     display = args.display
-    save_image_path = args.save_image_path
-    basedir = "camera"
+    # save_image_path = args.save_image_path
+    save_image_path = ""
+    # basedir = "camera"
+    basedir = "cameras"
     # file_path = "/media/xin/data/data/face_data/test_img"
-    file_path = "/media/xin/data/data/face_data/test_data/FairPhone5广角采集预览录屏/室内灯光/0.2m screen-20240417-144619.mp4"
-    vs = VideoStreamer(basedir, file_path,90)
+    file_path = "/media/xin/data/data/face_data/our_test/images"
+    # file_path = "/media/xin/data/data/face_data/test_data/FairPhone5广角采集预览录屏/室内灯光/0.2m screen-20240417-144619.mp4"
+    vs = VideoStreamer(basedir, file_path,0)
     # testing begin
     key = 32
     count = 0
