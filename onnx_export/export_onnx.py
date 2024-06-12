@@ -86,6 +86,7 @@ if __name__ == '__main__':
     input_names = ["input"]
     output_names = ["bbox", "confidence", "landmark"]
     inputs = torch.randn(1, 3, args.long_side, args.long_side).to(device)
+    # inputs = torch.randn(1, 3, 640, 640).to(device)
 
     # dynamic_axes = {"input": {0: "None", 2: "None", 3: "None"}, "bbox": {1: "None"}, "confidence": {1: "None"}, "landmark": {1: "None"}}
     # dynamic_axes = {"bbox": {1: "None"}, "confidence": {1: "None"}, "landmark": {1: "None"}}
