@@ -3,7 +3,7 @@ import os
 import argparse
 import torch
 import numpy as np
-from face_recognition.face_verify import Insightface, face_compare
+from face_test_all.face_recognition.face_verify import Insightface, face_compare
 
 from file import Walk
 import cv2
