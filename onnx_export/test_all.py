@@ -25,11 +25,11 @@ parser.add_argument('--confidence_threshold', default=0.02, type=float, help='co
 parser.add_argument('--top_k', default=5000, type=int, help='top_k')
 parser.add_argument('--nms_threshold', default=0.4, type=float, help='nms_threshold')
 parser.add_argument('--keep_top_k', default=750, type=int, help='keep_top_k')
-parser.add_argument('--save_image_path', type=str, default="/media/xin/data/data/face_data/test_data/res/screen-result_onnx", help='show detection results')
+parser.add_argument('--save_image_path', type=str, default="/media/xin/work/github_pro/face/Pytorch_Retinaface/data/test/res", help='show detection results')
 parser.add_argument('--display', action="store_true", default=True, help='show detection results')
 parser.add_argument('--vis_thres', default=0.6, type=float, help='visualization_threshold')
 parser.add_argument('--imgsize', default=640, type=int, help='visualization_threshold')
-parser.add_argument('--test_path', default="data/test", type=str, help='test path')
+parser.add_argument('--test_path', default="/media/xin/work/github_pro/face/Pytorch_Retinaface/data/test/img", type=str, help='test path')
 args = parser.parse_args()
 
 
@@ -111,6 +111,7 @@ def preprocess(img_raw, img_size):
     target_size = (img_size, img_size)  # Example target size
     padding_color = (0, 0, 0)  # Example padding color (black)
     img, ratio, padding = padding_resize(img_raw, target_size, padding_color)
+    prepro_img = img.copy()
     img = np.float32(img)
     im_height, im_width, _ = img.shape
     img -= (104, 117, 123)
@@ -120,7 +121,7 @@ def preprocess(img_raw, img_size):
     landms_scale = np.array([img.shape[3], img.shape[2], img.shape[3], img.shape[2],
                              img.shape[3], img.shape[2], img.shape[3], img.shape[2],
                              img.shape[3], img.shape[2]])
-    return img, box_scale, landms_scale,padding,ratio
+    return img, box_scale, landms_scale,padding,ratio,prepro_img
 
 
 def postprocess(im_height, im_width, model_out, box_scale, landms_scale, padding, ratio, resize=1):
@@ -296,7 +297,7 @@ if __name__ == '__main__':
             img_raw = vs.next_frame()
         except:
             break
-        img, box_scale, landms_scale,padding,ratio = preprocess(img_raw, img_size)
+        img, box_scale, landms_scale,padding,ratio,prepro_img = preprocess(img_raw, img_size)
         model_out = model_run(model_path,img)
         dets = postprocess(img_size, img_size, model_out, box_scale, landms_scale, padding, ratio, resize=1)
         draw_image(dets, img_raw)
@@ -314,6 +315,9 @@ if __name__ == '__main__':
             img_name = f"frame_{count:04d}.jpg"
             save_img = os.path.join(save_image_path,img_name)
             cv2.imwrite(save_img, img_raw)
+            img_name_pre = f"frame_{count:04d}_pre.jpg"
+            save_img_pre = os.path.join(save_image_path, img_name_pre)
+            cv2.imwrite(save_img_pre, prepro_img)
             print("保存成功：",img_name)
             count += 1
 
